@@ -1,0 +1,11 @@
+Model Information:
+* title:	Old Rusty Knife Tramontina PBR
+* source:	https://sketchfab.com/3d-models/old-rusty-knife-tramontina-pbr-9183a3b88d8d4065bdc3987ab28ef74b
+* author:	The Cuban Jeweler (https://sketchfab.com/torreblanca)
+
+Model License:
+* license type:	CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
+* requirements:	Author must be credited. Commercial use is allowed.
+
+If you use this 3D model in your project be sure to copy paste this credit wherever you share it:
+This work is based on "Old Rusty Knife Tramontina PBR" (https://sketchfab.com/3d-models/old-rusty-knife-tramontina-pbr-9183a3b88d8d4065bdc3987ab28ef74b) by The Cuban Jeweler (https://sketchfab.com/torreblanca) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)

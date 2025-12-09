@@ -2,27 +2,60 @@ import { Canvas } from '@react-three/fiber'
 import { XR, createXRStore } from '@react-three/xr'
 import { useState } from 'react'
 import { Scene } from './components/Scene'
+import './index.css'
 
 const store = createXRStore()
 
-// Bıçak bilgileri
-const KNIFE_INFO = {
-  name: "Santoku Bıçağı",
-  origin: "Japonya",
-  steel: "VG-10 Şam Çeliği",
-  length: "18 cm",
-  handle: "Pakka Wood",
-  usage: "Sebze, et ve balık için çok amaçlı",
-  description: "Santoku, Japonca'da 'üç erdem' anlamına gelir: dilimleme, doğrama ve küp kesme."
+// Bıçak tipleri
+const KNIFE_TYPES = {
+  santoku: {
+    id: 'santoku',
+    name: "三徳包丁",
+    nameEn: "Santoku",
+    origin: "Japonya",
+    steel: "VG-10 Şam Çeliği",
+    length: "18 cm",
+    handle: "Pakka Wood",
+    usage: "Sebze, et ve balık için çok amaçlı",
+    description: "Santoku, Japonca'da 'üç erdem' anlamına gelir: dilimleme, doğrama ve küp kesme.",
+    model: "/models/santoku/scene.gltf",
+    baseScale: 1,
+    rotationFix: [Math.PI / 2, 0, 0]
+  },
+  gyuto: {
+    id: 'gyuto',
+    name: "牛刀",
+    nameEn: "Gyuto",
+    origin: "Japonya",
+    steel: "Aogami Super",
+    length: "21 cm",
+    handle: "Kayın Ağacı",
+    usage: "Et kesimi ve genel mutfak işleri",
+    description: "Japon şef bıçağı. Batı tarzı chef knife'ın Japon yorumudur, daha ince ve keskin.",
+    model: "/models/gyuto/scene.gltf",
+    baseScale: 1,
+    rotationFix: [Math.PI / 2, 0, 0]
+  }
+}
+
+// Görünüm modları
+const VIEW_MODES = {
+  NORMAL: 'normal',
+  WIREFRAME: 'wireframe',
+  XRAY: 'xray'
 }
 
 function App() {
   const [knives, setKnives] = useState([])
   const [selectedId, setSelectedId] = useState(null)
+  const [viewMode, setViewMode] = useState(VIEW_MODES.NORMAL)
+  const [activeKnifeType, setActiveKnifeType] = useState('santoku')
+  const [showKnifeMenu, setShowKnifeMenu] = useState(false)
 
   const handlePlaceKnife = (position) => {
     setKnives(prev => [...prev, {
       id: Date.now(),
+      type: activeKnifeType,
       position,
       scale: 4,
       rotation: 0
@@ -31,9 +64,7 @@ function App() {
 
   const handleMoveKnife = (id, newPosition) => {
     setKnives(prev => prev.map(knife =>
-      knife.id === id
-        ? { ...knife, position: newPosition }
-        : knife
+      knife.id === id ? { ...knife, position: newPosition } : knife
     ))
   }
 
@@ -61,162 +92,196 @@ function App() {
     setSelectedId(null)
   }
 
-  const clearKnives = () => {
-    setKnives([])
-    setSelectedId(null)
+  const cycleViewMode = () => {
+    setViewMode(prev => {
+      if (prev === VIEW_MODES.NORMAL) return VIEW_MODES.WIREFRAME
+      if (prev === VIEW_MODES.WIREFRAME) return VIEW_MODES.XRAY
+      return VIEW_MODES.NORMAL
+    })
+  }
+
+  const getViewModeLabel = () => {
+    if (viewMode === VIEW_MODES.WIREFRAME) return '🔲'
+    if (viewMode === VIEW_MODES.XRAY) return '👁'
+    return '🎨'
   }
 
   const selectedKnife = knives.find(k => k.id === selectedId)
+  const selectedKnifeInfo = selectedKnife ? KNIFE_TYPES[selectedKnife.type] : null
 
   return (
-    <div style={{ width: '100vw', height: '100vh' }}>
-      {/* Üst butonlar */}
-      <div style={{
-        position: 'absolute',
-        top: 20,
-        left: '50%',
-        transform: 'translateX(-50%)',
-        display: 'flex',
-        gap: 10,
-        zIndex: 1000
-      }}>
-        <button onClick={() => store.enterAR()} style={btnStyle('#4CAF50')}>
-          AR'a Gir
-        </button>
-        <button onClick={clearKnives} style={btnStyle('#f44336')}>
-          Temizle
-        </button>
-      </div>
+    <div className="app-container">
+      {/* Üst Bar */}
+      <header className="top-bar">
+        <div className="logo-section">
+          <div>
+            <div className="logo-kanji">刃物展示</div>
+            <div className="logo-subtitle">Japanese Knife AR</div>
+          </div>
+        </div>
 
-      {/* Seçili bıçak kontrolleri */}
+        <div className="top-actions">
+          <button
+            className="btn btn-secondary"
+            onClick={() => { setKnives([]); setSelectedId(null) }}
+          >
+            Temizle
+          </button>
+          <button
+            className="btn btn-primary"
+            onClick={() => store.enterAR()}
+          >
+            AR'a Gir
+          </button>
+        </div>
+      </header>
+
+      {/* Kontrol Paneli */}
       {selectedId && (
-        <div style={{
-          position: 'absolute',
-          top: 80,
-          left: '50%',
-          transform: 'translateX(-50%)',
-          display: 'flex',
-          gap: 10,
-          zIndex: 1000,
-          background: 'rgba(0,0,0,0.8)',
-          padding: '15px 20px',
-          borderRadius: 10
-        }}>
-          <button onClick={() => handleScaleChange(-0.5)} style={btnStyle('#2196F3')}>
-            − Küçült
+        <div className="control-panel">
+          <button className="control-btn" onClick={() => handleScaleChange(-0.5)}>−</button>
+          <span className="scale-display">×{selectedKnife?.scale.toFixed(1)}</span>
+          <button className="control-btn" onClick={() => handleScaleChange(0.5)}>+</button>
+          <div className="control-divider" />
+          <button className="control-btn" onClick={handleRotate}>↻</button>
+          <div className="control-divider" />
+          <button
+            className={`control-btn ${viewMode !== VIEW_MODES.NORMAL ? 'active' : ''}`}
+            onClick={cycleViewMode}
+            title={`Görünüm: ${viewMode}`}
+          >
+            {getViewModeLabel()}
           </button>
-          <span style={{ color: 'white', alignSelf: 'center' }}>
-            {selectedKnife?.scale.toFixed(1)}
-          </span>
-          <button onClick={() => handleScaleChange(0.5)} style={btnStyle('#2196F3')}>
-            + Büyüt
-          </button>
-          <button onClick={handleRotate} style={btnStyle('#9C27B0')}>
-            ↻ Döndür
-          </button>
-          <button onClick={handleDelete} style={btnStyle('#ff5722')}>
-            🗑️ Sil
-          </button>
-          <button onClick={() => setSelectedId(null)} style={btnStyle('#607D8B')}>
-            ✕ Kapat
-          </button>
+          <div className="control-divider" />
+          <button className="control-btn danger" onClick={handleDelete}>✕</button>
         </div>
       )}
 
-      {/* Bilgi Paneli - Sağ tarafta */}
-      {selectedId && (
-        <div style={{
-          position: 'absolute',
-          top: '50%',
-          right: 20,
-          transform: 'translateY(-50%)',
-          width: 280,
-          background: 'rgba(0,0,0,0.85)',
-          padding: 20,
-          borderRadius: 12,
-          zIndex: 1000,
-          color: 'white',
-          boxShadow: '0 4px 20px rgba(0,0,0,0.5)'
-        }}>
-          <h2 style={{ margin: '0 0 15px 0', color: '#4CAF50', fontSize: 22 }}>
-            {KNIFE_INFO.name}
-          </h2>
+      {/* Görünüm Modu Göstergesi */}
+      {viewMode !== VIEW_MODES.NORMAL && (
+        <div className="view-mode-badge">
+          {viewMode === VIEW_MODES.WIREFRAME ? 'Wireframe' : 'X-Ray'}
+        </div>
+      )}
 
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
-            <InfoRow label="Menşei" value={KNIFE_INFO.origin} />
-            <InfoRow label="Çelik" value={KNIFE_INFO.steel} />
-            <InfoRow label="Bıçak Boyu" value={KNIFE_INFO.length} />
-            <InfoRow label="Sap" value={KNIFE_INFO.handle} />
-            <InfoRow label="Kullanım" value={KNIFE_INFO.usage} />
+      {/* Bilgi Paneli */}
+      {selectedId && selectedKnifeInfo && (
+        <div className="info-panel">
+          <button className="info-close" onClick={() => setSelectedId(null)}>✕</button>
+
+          <div className="info-header">
+            <span className="info-kanji">{selectedKnifeInfo.name}</span>
+            <h2 className="info-title">{selectedKnifeInfo.nameEn}</h2>
+            <span className="info-origin">{selectedKnifeInfo.origin}</span>
           </div>
 
-          <p style={{
-            marginTop: 15,
-            fontSize: 13,
-            color: '#aaa',
-            lineHeight: 1.5,
-            borderTop: '1px solid #333',
-            paddingTop: 15
-          }}>
-            {KNIFE_INFO.description}
-          </p>
+          <div className="info-body">
+            <div className="info-grid">
+              <div className="info-row">
+                <span className="info-label">Çelik Tipi</span>
+                <span className="info-value">{selectedKnifeInfo.steel}</span>
+              </div>
+              <div className="info-row">
+                <span className="info-label">Bıçak Boyu</span>
+                <span className="info-value">{selectedKnifeInfo.length}</span>
+              </div>
+              <div className="info-row">
+                <span className="info-label">Sap Malzemesi</span>
+                <span className="info-value">{selectedKnifeInfo.handle}</span>
+              </div>
+              <div className="info-row">
+                <span className="info-label">Kullanım</span>
+                <span className="info-value">{selectedKnifeInfo.usage}</span>
+              </div>
+            </div>
+
+            <div className="info-description">
+              <p>{selectedKnifeInfo.description}</p>
+            </div>
+          </div>
         </div>
       )}
 
-      {/* Alt bilgi */}
-      <div style={{
-        position: 'absolute',
-        bottom: 20,
-        left: '50%',
-        transform: 'translateX(-50%)',
-        color: 'white',
-        background: 'rgba(0,0,0,0.7)',
-        padding: '10px 20px',
-        borderRadius: 8,
-        zIndex: 1000,
-        textAlign: 'center'
-      }}>
-        {selectedId
-          ? 'Zemine tıkla = Bıçağı taşı | Başka bıçağa tıkla = Seç'
-          : 'Zemine tıkla = Bıçak yerleştir | Bıçağa tıkla = Seç'
-        }
-        <br />
-        Toplam: {knives.length}
+      {/* Boş Durum */}
+      {knives.length === 0 && (
+        <div className="empty-state">
+          <div className="empty-kanji">刃</div>
+          <p className="empty-text">Yerleştirmek için zemine dokunun</p>
+        </div>
+      )}
+
+      {/* Alt Durum Barı */}
+      <div className="status-bar">
+        <div className="status-hint">
+          <kbd>Zemin</kbd>
+          <span>{selectedId ? 'Taşı' : 'Yerleştir'}</span>
+        </div>
+
+        <div className="status-divider" />
+
+        <div className="status-hint">
+          <kbd>Bıçak</kbd>
+          <span>Seç</span>
+        </div>
+
+        <div className="status-divider" />
+
+        <div className="status-count">{knives.length} bıçak</div>
+
+        <div className="status-divider" />
+
+        {/* Bıçak Tipi Seçici */}
+        <div className="knife-dropdown">
+          <button
+            className="knife-dropdown-toggle"
+            onClick={() => setShowKnifeMenu(!showKnifeMenu)}
+          >
+            <span className="knife-dropdown-kanji">{KNIFE_TYPES[activeKnifeType].name}</span>
+            <span className="knife-dropdown-name">{KNIFE_TYPES[activeKnifeType].nameEn}</span>
+            <span className={`knife-dropdown-arrow ${showKnifeMenu ? 'open' : ''}`}>▼</span>
+          </button>
+
+          {showKnifeMenu && (
+            <div className="knife-dropdown-menu">
+              {Object.values(KNIFE_TYPES).map((knife) => (
+                <button
+                  key={knife.id}
+                  className={`knife-dropdown-item ${activeKnifeType === knife.id ? 'active' : ''}`}
+                  onClick={() => {
+                    setActiveKnifeType(knife.id)
+                    setShowKnifeMenu(false)
+                  }}
+                >
+                  <span className="knife-dropdown-item-kanji">{knife.name}</span>
+                  <div className="knife-dropdown-item-info">
+                    <span className="knife-dropdown-item-name">{knife.nameEn}</span>
+                    <span className="knife-dropdown-item-usage">{knife.usage}</span>
+                  </div>
+                </button>
+              ))}
+            </div>
+          )}
+        </div>
       </div>
 
-      <Canvas camera={{ position: [0, 10, 20], fov: 50 }}>
-        <XR store={store}>
-          <Scene
-            knives={knives}
-            onPlaceKnife={handlePlaceKnife}
-            selectedId={selectedId}
-            onSelectKnife={setSelectedId}
-            onMoveKnife={handleMoveKnife}
-          />
-        </XR>
-      </Canvas>
+      {/* 3D Canvas */}
+      <div className="canvas-container">
+        <Canvas camera={{ position: [0, 10, 20], fov: 50 }}>
+          <XR store={store}>
+            <Scene
+              knives={knives}
+              onPlaceKnife={handlePlaceKnife}
+              selectedId={selectedId}
+              onSelectKnife={setSelectedId}
+              onMoveKnife={handleMoveKnife}
+              viewMode={viewMode}
+              knifeTypes={KNIFE_TYPES}
+            />
+          </XR>
+        </Canvas>
+      </div>
     </div>
   )
 }
-
-// Bilgi satırı komponenti
-function InfoRow({ label, value }) {
-  return (
-    <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-      <span style={{ color: '#888' }}>{label}:</span>
-      <span style={{ color: '#fff', fontWeight: 500 }}>{value}</span>
-    </div>
-  )
-}
-
-const btnStyle = (bg) => ({
-  padding: '12px 24px',
-  fontSize: 16,
-  background: bg,
-  color: 'white',
-  border: 'none',
-  borderRadius: 8,
-  cursor: 'pointer'
-})
 
 export default App
