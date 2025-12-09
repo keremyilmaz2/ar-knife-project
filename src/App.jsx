@@ -1,10 +1,16 @@
 import { Canvas } from '@react-three/fiber'
-import { XR, createXRStore } from '@react-three/xr'
-import { useState } from 'react'
+import { useState, lazy, Suspense } from 'react'
 import { Scene } from './components/Scene'
 import './index.css'
+import { useGLTF } from '@react-three/drei'
 
-const store = createXRStore()
+
+// Modelleri önceden yükle
+useGLTF.preload('/models/santoku/scene.gltf')
+useGLTF.preload('/models/gyuto/scene.gltf')
+
+// MindAR viewer'ı lazy load et
+const MindARViewer = lazy(() => import('./components/MindARViewer').then(m => ({ default: m.MindARViewer })))
 
 // Bıçak tipleri
 const KNIFE_TYPES = {
@@ -51,6 +57,7 @@ function App() {
   const [viewMode, setViewMode] = useState(VIEW_MODES.NORMAL)
   const [activeKnifeType, setActiveKnifeType] = useState('santoku')
   const [showKnifeMenu, setShowKnifeMenu] = useState(false)
+  const [arMode, setArMode] = useState(false)
 
   const handlePlaceKnife = (position) => {
     setKnives(prev => [...prev, {
@@ -109,6 +116,25 @@ function App() {
   const selectedKnife = knives.find(k => k.id === selectedId)
   const selectedKnifeInfo = selectedKnife ? KNIFE_TYPES[selectedKnife.type] : null
 
+  // AR Modu aktifken
+  if (arMode) {
+    return (
+      <Suspense fallback={
+        <div className="ar-loading-screen">
+          <div className="ar-loading-content">
+            <div className="ar-spinner large" />
+            <p>AR Yükleniyor...</p>
+          </div>
+        </div>
+      }>
+        <MindARViewer
+          knifeType={KNIFE_TYPES[activeKnifeType]}
+          onClose={() => setArMode(false)}
+        />
+      </Suspense>
+    )
+  }
+
   return (
     <div className="app-container">
       {/* Üst Bar */}
@@ -129,9 +155,10 @@ function App() {
           </button>
           <button
             className="btn btn-primary"
-            onClick={() => store.enterAR()}
+            disabled
+            style={{ opacity: 0.5, cursor: 'not-allowed' }}
           >
-            AR'a Gir
+            📷 AR (Yakında)
           </button>
         </div>
       </header>
@@ -207,6 +234,7 @@ function App() {
         <div className="empty-state">
           <div className="empty-kanji">刃</div>
           <p className="empty-text">Yerleştirmek için zemine dokunun</p>
+          <p className="empty-hint">veya AR modunu başlatın</p>
         </div>
       )}
 
@@ -267,17 +295,15 @@ function App() {
       {/* 3D Canvas */}
       <div className="canvas-container">
         <Canvas camera={{ position: [0, 10, 20], fov: 50 }}>
-          <XR store={store}>
-            <Scene
-              knives={knives}
-              onPlaceKnife={handlePlaceKnife}
-              selectedId={selectedId}
-              onSelectKnife={setSelectedId}
-              onMoveKnife={handleMoveKnife}
-              viewMode={viewMode}
-              knifeTypes={KNIFE_TYPES}
-            />
-          </XR>
+          <Scene
+            knives={knives}
+            onPlaceKnife={handlePlaceKnife}
+            selectedId={selectedId}
+            onSelectKnife={setSelectedId}
+            onMoveKnife={handleMoveKnife}
+            viewMode={viewMode}
+            knifeTypes={KNIFE_TYPES}
+          />
         </Canvas>
       </div>
     </div>

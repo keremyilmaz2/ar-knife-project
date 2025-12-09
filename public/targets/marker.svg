@@ -1,0 +1,66 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512">
+  <defs>
+    <linearGradient id="steelGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#e8e8e8"/>
+      <stop offset="50%" style="stop-color:#c0c0c0"/>
+      <stop offset="100%" style="stop-color:#a0a0a0"/>
+    </linearGradient>
+    <linearGradient id="handleGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#4a3728"/>
+      <stop offset="50%" style="stop-color:#2d1f14"/>
+      <stop offset="100%" style="stop-color:#1a120b"/>
+    </linearGradient>
+  </defs>
+  
+  <!-- Background -->
+  <rect width="512" height="512" fill="#1a1a1a"/>
+  
+  <!-- Decorative border -->
+  <rect x="20" y="20" width="472" height="472" fill="none" stroke="#c41e3a" stroke-width="2"/>
+  <rect x="30" y="30" width="452" height="452" fill="none" stroke="#333" stroke-width="1"/>
+  
+  <!-- Corner decorations -->
+  <path d="M40 40 L80 40 L40 80 Z" fill="#c41e3a"/>
+  <path d="M472 40 L432 40 L472 80 Z" fill="#c41e3a"/>
+  <path d="M40 472 L80 472 L40 432 Z" fill="#c41e3a"/>
+  <path d="M472 472 L432 472 L472 432 Z" fill="#c41e3a"/>
+  
+  <!-- Main kanji character 刃 (blade) -->
+  <text x="256" y="180" font-family="serif" font-size="120" font-weight="bold" fill="#c41e3a" text-anchor="middle">刃</text>
+  
+  <!-- Knife silhouette -->
+  <g transform="translate(100, 240)">
+    <!-- Blade -->
+    <path d="M50 60 Q60 20 300 30 L310 50 Q70 55 50 60 Z" fill="url(#steelGradient)" stroke="#888" stroke-width="1"/>
+    <!-- Edge highlight -->
+    <path d="M60 58 Q150 40 300 35" fill="none" stroke="#fff" stroke-width="1" opacity="0.5"/>
+    <!-- Handle -->
+    <path d="M30 50 L50 45 L50 75 L30 70 Q20 60 30 50 Z" fill="url(#handleGradient)" stroke="#1a1a1a" stroke-width="1"/>
+    <!-- Handle rivets -->
+    <circle cx="38" cy="55" r="3" fill="#c49a6c"/>
+    <circle cx="38" cy="65" r="3" fill="#c49a6c"/>
+  </g>
+  
+  <!-- Subtitle -->
+  <text x="256" y="380" font-family="sans-serif" font-size="24" fill="#666" text-anchor="middle" letter-spacing="8">JAPANESE KNIFE</text>
+  <text x="256" y="410" font-family="sans-serif" font-size="16" fill="#444" text-anchor="middle" letter-spacing="4">AR SHOWCASE</text>
+  
+  <!-- QR-like pattern for better tracking -->
+  <g fill="#333">
+    <rect x="60" y="440" width="20" height="20"/>
+    <rect x="90" y="440" width="10" height="10"/>
+    <rect x="110" y="450" width="10" height="10"/>
+    <rect x="60" y="470" width="10" height="10"/>
+    <rect x="80" y="470" width="20" height="10"/>
+    
+    <rect x="432" y="440" width="20" height="20"/>
+    <rect x="412" y="440" width="10" height="10"/>
+    <rect x="392" y="450" width="10" height="10"/>
+    <rect x="432" y="470" width="10" height="10"/>
+    <rect x="412" y="470" width="20" height="10"/>
+  </g>
+  
+  <!-- Additional tracking features -->
+  <circle cx="256" y="460" r="15" fill="none" stroke="#c41e3a" stroke-width="2"/>
+  <circle cx="256" y="460" r="8" fill="#c41e3a"/>
+</svg>

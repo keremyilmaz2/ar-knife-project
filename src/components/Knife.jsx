@@ -67,7 +67,6 @@ export function Knife({
         onSelect()
     }
 
-    // Toplam scale = kullanıcı scale * model base scale
     const totalScale = scale * baseScale
 
     return (

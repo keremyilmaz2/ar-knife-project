@@ -173,6 +173,11 @@ body {
   }
 }
 
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
 .control-divider {
   width: 1px;
   height: 28px;
@@ -222,6 +227,11 @@ body {
   background: rgba(196, 30, 58, 0.2);
 }
 
+.control-btn.active {
+  background: var(--gradient-accent);
+  box-shadow: var(--shadow-glow);
+}
+
 /* Bilgi Paneli */
 .info-panel {
   position: absolute;
@@ -266,6 +276,13 @@ body {
   font-size: 48px;
   color: rgba(196, 30, 58, 0.15);
   font-weight: 700;
+}
+
+.info-kanji {
+  font-family: var(--font-display);
+  font-size: 14px;
+  color: var(--aka);
+  letter-spacing: 2px;
 }
 
 .info-title {
@@ -429,6 +446,12 @@ body {
   letter-spacing: 2px;
 }
 
+.empty-hint {
+  font-size: 13px;
+  color: var(--hai);
+  margin-top: 8px;
+}
+
 /* Canvas Container */
 .canvas-container {
   width: 100%;
@@ -438,51 +461,7 @@ body {
   left: 0;
 }
 
-/* Mobil Responsive */
-@media (max-width: 768px) {
-  .top-bar {
-    padding: 16px;
-  }
-  
-  .logo-kanji {
-    font-size: 22px;
-  }
-  
-  .logo-subtitle {
-    display: none;
-  }
-  
-  .info-panel {
-    width: calc(100% - 32px);
-    right: 16px;
-    top: auto;
-    bottom: 100px;
-    transform: none;
-    max-height: 45vh;
-    overflow-y: auto;
-  }
-  
-  .control-panel {
-    top: auto;
-    bottom: 180px;
-    flex-wrap: wrap;
-    max-width: calc(100% - 32px);
-    justify-content: center;
-  }
-  
-  .status-bar {
-    bottom: 16px;
-    padding: 12px 20px;
-    gap: 16px;
-    max-width: calc(100% - 32px);
-  }
-  
-  .btn {
-    padding: 10px 18px;
-    font-size: 12px;
-  }
-
-  
+/* View Mode Badge */
 .view-mode-badge {
   position: absolute;
   top: 140px;
@@ -500,154 +479,7 @@ body {
   animation: fadeIn 0.3s var(--ease-out-expo);
 }
 
-.control-btn.active {
-  background: var(--gradient-accent);
-  box-shadow: var(--shadow-glow);
-}
-/* Bıçak Seçici */
-.knife-selector {
-  position: absolute;
-  top: 20px;
-  left: 50%;
-  transform: translateX(-50%);
-  z-index: 1001;
-}
-
-.knife-selector-toggle {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 12px 20px;
-  background: rgba(0, 0, 0, 0.85);
-  backdrop-filter: blur(20px);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 12px;
-  cursor: pointer;
-  transition: all 0.3s var(--ease-out-expo);
-}
-
-.knife-selector-toggle:hover {
-  background: rgba(0, 0, 0, 0.95);
-  border-color: rgba(255, 255, 255, 0.15);
-}
-
-.knife-selector-kanji {
-  font-family: var(--font-display);
-  font-size: 20px;
-  color: var(--aka);
-}
-
-.knife-selector-name {
-  font-size: 14px;
-  color: var(--washi);
-  font-weight: 500;
-}
-
-.knife-selector-arrow {
-  font-size: 10px;
-  color: var(--gin);
-  transition: transform 0.3s var(--ease-out-expo);
-}
-
-.knife-selector-arrow.open {
-  transform: rotate(180deg);
-}
-
-.knife-menu {
-  position: absolute;
-  top: calc(100% + 8px);
-  left: 50%;
-  transform: translateX(-50%);
-  width: 320px;
-  background: rgba(10, 10, 10, 0.95);
-  backdrop-filter: blur(30px);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 16px;
-  padding: 8px;
-  animation: slideDown 0.3s var(--ease-out-expo);
-  box-shadow: var(--shadow-card);
-}
-
-.knife-menu-item {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-  width: 100%;
-  padding: 14px 16px;
-  background: transparent;
-  border: none;
-  border-radius: 10px;
-  cursor: pointer;
-  transition: all 0.2s var(--ease-in-out);
-  text-align: left;
-}
-
-.knife-menu-item:hover {
-  background: rgba(255, 255, 255, 0.05);
-}
-
-.knife-menu-item.active {
-  background: rgba(196, 30, 58, 0.15);
-  border: 1px solid rgba(196, 30, 58, 0.3);
-}
-
-.knife-menu-kanji {
-  font-family: var(--font-display);
-  font-size: 24px;
-  color: var(--aka);
-  min-width: 80px;
-}
-
-.knife-menu-info {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-}
-
-.knife-menu-name {
-  font-size: 14px;
-  font-weight: 600;
-  color: var(--washi);
-}
-
-.knife-menu-usage {
-  font-size: 11px;
-  color: var(--gin);
-}
-
-.info-kanji {
-  font-family: var(--font-display);
-  font-size: 14px;
-  color: var(--aka);
-  letter-spacing: 2px;
-}
-
-@media (max-width: 768px) {
-  .knife-selector-toggle {
-    padding: 10px 16px;
-    gap: 8px;
-  }
-
-  .knife-selector-kanji {
-    font-size: 16px;
-  }
-
-  .knife-selector-name {
-    font-size: 12px;
-  }
-
-  .knife-menu {
-    width: calc(100vw - 32px);
-    max-width: 320px;
-  }
-}
-
-
-
-
-}
-
-/* Bıçak Dropdown - Alt Barda */
+/* Bıçak Dropdown */
 .knife-dropdown {
   position: relative;
 }
@@ -765,8 +597,309 @@ body {
   line-height: 1.3;
 }
 
-/* Mobil için dropdown */
+/* ==================== */
+/* AR / MindAR Stilleri */
+/* ==================== */
+
+.mindar-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: #000;
+  z-index: 9999;
+}
+
+.mindar-canvas {
+  width: 100%;
+  height: 100%;
+}
+
+.ar-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.ar-status {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  padding: 32px 48px;
+  background: rgba(0, 0, 0, 0.85);
+  backdrop-filter: blur(20px);
+  border-radius: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  text-align: center;
+}
+
+.ar-status p {
+  font-size: 18px;
+  font-weight: 500;
+  color: var(--washi);
+}
+
+.ar-status.scanning {
+  background: rgba(0, 0, 0, 0.7);
+}
+
+.ar-status.error {
+  border-color: rgba(196, 30, 58, 0.3);
+}
+
+.ar-hint {
+  font-size: 13px;
+  color: var(--gin);
+}
+
+.ar-scan-icon {
+  font-size: 48px;
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.1); opacity: 0.7; }
+}
+
+.ar-error-icon {
+  font-size: 48px;
+}
+
+.ar-spinner {
+  width: 40px;
+  height: 40px;
+  border: 3px solid rgba(255, 255, 255, 0.1);
+  border-top-color: var(--aka);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+.ar-spinner.large {
+  width: 60px;
+  height: 60px;
+  border-width: 4px;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.ar-tracking-badge {
+  position: absolute;
+  top: 100px;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 10px 20px;
+  background: rgba(34, 139, 34, 0.9);
+  border-radius: 20px;
+  font-size: 14px;
+  font-weight: 500;
+  color: white;
+  animation: fadeIn 0.3s ease;
+}
+
+.ar-close-btn {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  width: 48px;
+  height: 48px;
+  border: none;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(10px);
+  color: var(--washi);
+  font-size: 20px;
+  cursor: pointer;
+  z-index: 10000;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.ar-close-btn:hover {
+  background: rgba(196, 30, 58, 0.8);
+  transform: scale(1.1);
+}
+
+.ar-info-panel {
+  position: absolute;
+  bottom: 40px;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 20px 32px;
+  background: rgba(0, 0, 0, 0.85);
+  backdrop-filter: blur(20px);
+  border-radius: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  text-align: center;
+  animation: slideUp 0.4s var(--ease-out-expo);
+  z-index: 10000;
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateX(-50%) translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+}
+
+.ar-info-panel .ar-info-kanji {
+  font-family: var(--font-display);
+  font-size: 14px;
+  color: var(--aka);
+  letter-spacing: 3px;
+}
+
+.ar-info-panel h3 {
+  font-family: var(--font-display);
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--washi);
+  margin: 4px 0;
+}
+
+.ar-info-panel p {
+  font-size: 13px;
+  color: var(--gin);
+}
+
+/* AR Loading Screen */
+.ar-loading-screen {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: var(--gradient-dark);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+}
+
+.ar-loading-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+}
+
+.ar-loading-content p {
+  font-size: 16px;
+  color: var(--gin);
+  letter-spacing: 2px;
+}
+
+/* AR Scale Controls */
+.ar-scale-controls {
+  position: absolute;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 16px;
+  background: rgba(0, 0, 0, 0.8);
+  backdrop-filter: blur(10px);
+  border-radius: 30px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  z-index: 10000;
+}
+
+.ar-scale-controls button {
+  width: 36px;
+  height: 36px;
+  border: none;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.1);
+  color: var(--washi);
+  font-size: 20px;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.ar-scale-controls button:hover {
+  background: rgba(196, 30, 58, 0.5);
+}
+
+.ar-scale-controls button:active {
+  transform: scale(0.95);
+}
+
+.ar-scale-controls span {
+  font-size: 14px;
+  color: var(--kincha);
+  font-weight: 500;
+  min-width: 50px;
+  text-align: center;
+}
+
+/* ==================== */
+/* Mobil Responsive     */
+/* ==================== */
+
 @media (max-width: 768px) {
+  .top-bar {
+    padding: 16px;
+  }
+  
+  .logo-kanji {
+    font-size: 22px;
+  }
+  
+  .logo-subtitle {
+    display: none;
+  }
+  
+  .info-panel {
+    width: calc(100% - 32px);
+    right: 16px;
+    top: auto;
+    bottom: 100px;
+    transform: none;
+    max-height: 45vh;
+    overflow-y: auto;
+  }
+  
+  .control-panel {
+    top: auto;
+    bottom: 180px;
+    flex-wrap: wrap;
+    max-width: calc(100% - 32px);
+    justify-content: center;
+  }
+  
+  .status-bar {
+    bottom: 16px;
+    padding: 12px 20px;
+    gap: 16px;
+    max-width: calc(100% - 32px);
+  }
+  
+  .btn {
+    padding: 10px 18px;
+    font-size: 12px;
+  }
+
   .knife-dropdown-toggle {
     padding: 6px 10px;
     gap: 6px;
@@ -792,5 +925,14 @@ body {
   .knife-dropdown-item-kanji {
     font-size: 16px;
     min-width: 55px;
+  }
+
+  .ar-info-panel {
+    width: calc(100% - 32px);
+    padding: 16px 24px;
+  }
+
+  .ar-info-panel h3 {
+    font-size: 20px;
   }
 }
